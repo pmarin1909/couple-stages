@@ -3,332 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aventura Romántica</title>
+    <title>El Camino hacia la Pareja</title>
     <style>
         :root {
-            /* Paleta de colores moderna */
-            --bg-color: #f3f4f6; /* Gris muy claro para el mapa */
-            --ui-bg: #ffffff; /* Blanco puro para la interfaz */
-            --primary: #6366f1; /* Violeta vibrante */
-            --secondary: #ec4899; /* Rosa vibrante */
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --path-color: #d1d5db;
+            --primary-color: #ff4b72;
+            --bg-color: #fdf2f4;
+            --text-color: #333;
         }
 
         body {
-            /* Tipografía moderna de sistema (limpia y sin serifas) */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
-            overflow: hidden;
-            color: var(--text-main);
-        }
-
-        /* --- ZONA SUPERIOR: EL MAPA --- */
-        #map-section {
-            flex: 1; /* Ocupa todo el espacio restante */
-            position: relative;
-            overflow: hidden;
-            /* Patrón de puntos sutil para fondo moderno */
-            background-image: radial-gradient(#e5e7eb 2px, transparent 2px);
-            background-size: 20px 20px;
-        }
-
-        /* Camino dibujado */
-        #path-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-
-        .path-line {
-            fill: none;
-            stroke: var(--path-color);
-            stroke-width: 6;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        /* Nodos del camino */
-        .map-node {
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            background-color: var(--ui-bg);
-            border: 4px solid var(--path-color);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: border-color 0.3s;
-        }
-
-        .map-node.visited {
-            border-color: var(--primary);
-            background-color: var(--primary);
-        }
-
-        /* Ficha que se mueve */
-        #player-token {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.4);
-            border: 3px solid white;
-            /* Curva de animación muy fluida tipo "rebote" */
-            transition: left 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                        top 0.7s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        transform 0.2s ease;
-        }
-
-        /* --- ZONA INFERIOR: INTERFAZ DE USUARIO --- */
-        #ui-section {
-            background-color: var(--ui-bg);
-            padding: 30px 20px;
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.05);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
-            z-index: 20; /* Asegura que siempre esté por encima */
-        }
-
-        .info-card {
-            text-align: center;
-            max-width: 600px;
-            width: 100%;
-            margin-bottom: 20px;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
             justify-content: center;
-        }
-
-        .stage-badge {
-            display: inline-block;
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        #stage-title {
-            margin: 0 0 10px 0;
-            font-size: 1.4rem;
-            color: var(--text-main);
-            font-weight: 700;
-        }
-
-        #stage-desc {
+            min-height: 100vh;
             margin: 0;
-            font-size: 1rem;
-            color: var(--text-muted);
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 75, 114, 0.15);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        /* Barra de progreso (El Camino) */
+        .path-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .path-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: #ffe0e6;
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .path-progress {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 4px;
+            background-color: var(--primary-color);
+            z-index: 2;
+            transform: translateY(-50%);
+            transition: width 0.4s ease;
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            background-color: #ffe0e6;
+            border-radius: 50%;
+            z-index: 3;
+            transition: all 0.4s ease;
+        }
+
+        .dot.active {
+            background-color: var(--primary-color);
+            transform: scale(1.3);
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        /* Escenario principal */
+        .scene {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .monigotes {
+            font-size: 4rem;
+            margin: 20px 0;
+            transition: all 0.5s ease;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #666;
             line-height: 1.5;
         }
 
+        /* Botones */
         .controls {
+            margin-top: 30px;
             display: flex;
-            gap: 15px;
-            width: 100%;
-            max-width: 400px;
+            justify-content: center;
+            gap: 20px;
         }
 
         button {
-            flex: 1;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        #btn-prev {
-            background-color: #f3f4f6;
-            color: var(--text-main);
-        }
-
-        #btn-prev:hover:not(:disabled) {
-            background-color: #e5e7eb;
-        }
-
-        #btn-next {
-            background-color: var(--primary);
+            background-color: var(--primary-color);
             color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            font-weight: bold;
         }
 
-        #btn-next:hover:not(:disabled) {
-            background-color: #4f46e5;
-            transform: translateY(-2px);
+        button:hover {
+            background-color: #e63e62;
+        }
+
+        button:active {
+            transform: scale(0.95);
         }
 
         button:disabled {
-            opacity: 0.5;
+            background-color: #ccc;
             cursor: not-allowed;
-            box-shadow: none;
             transform: none;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Zona del Mapa -->
-    <div id="map-section">
-        <svg id="path-svg">
-            <path id="map-path-line" class="path-line" d="" />
-        </svg>
-        <div id="nodes-container"></div>
-        <div id="player-token">🧍‍♂️</div>
-    </div>
+    <div class="container">
+        <div class="path-container" id="path-dots">
+            <div class="path-progress" id="progress-line" style="width: 0%;"></div>
+            </div>
 
-    <!-- Zona de Controles e Info (Bloque sólido abajo, cero superposiciones) -->
-    <div id="ui-section">
-        <div class="info-card">
-            <div><span class="stage-badge" id="stage-counter">Etapa 1 de 13</span></div>
+        <div class="scene" id="scene-container">
             <h2 id="stage-title">Título</h2>
+            <div class="monigotes" id="stage-visual">🧍‍♂️ ... 🧍‍♀️</div>
             <p id="stage-desc">Descripción</p>
         </div>
+
         <div class="controls">
-            <button id="btn-prev" onclick="changeStage(-1)" disabled>
-                <span>⬅️</span> Volver
-            </button>
-            <button id="btn-next" onclick="changeStage(1)">
-                Avanzar <span>➡️</span>
-            </button>
+            <button id="btn-prev" onclick="changeStage(-1)">⬅️ Retroceder</button>
+            <button id="btn-next" onclick="changeStage(1)">Avanzar ➡️</button>
         </div>
     </div>
 
     <script>
-        // Coordenadas x/y para dibujar un camino serpenteante en la zona superior
         const stages = [
-            { title: "Inicio", visual: "🚩", desc: "El punto de partida de toda gran historia.", x: 10, y: 20 },
-            { title: "El Radar Periférico", visual: "🧍‍♂️..🧍‍♀️", desc: "Aún no os conocéis, pero estáis en el mismo lugar físico. Alguien respira tu mismo aire.", x: 30, y: 15 },
-            { title: "Contacto Visual Táctico", visual: "👀", desc: "Nadie dice nada, pero las miradas se cruzan más de tres segundos. Alarma interna.", x: 55, y: 20 },
-            { title: "El Gran Stalkeo", visual: "🕵️‍♂️", desc: "Investigación profunda en Instagram hasta fotos de 2015 para asegurar que no es psicópata.", x: 80, y: 25 },
-            { title: "El Primer 'Like' Accidental", visual: "😱", desc: "Das 'like' a una foto vieja por error a las 3 AM. Pánico. Tierra trágame.", x: 85, y: 45 },
-            { title: "Rompiendo el Hielo", visual: "💬", desc: "Un 'hola' o MD. Se inicia la comunicación y descubrís que habláis el mismo idioma.", x: 65, y: 55 },
-            { title: "Pánico Pre-Cita", visual: "👕", desc: "Te pruebas 15 outfits. Sudas. Relees los últimos mensajes buscando señales de cancelación.", x: 40, y: 45 },
-            { title: "La Primera Cita", visual: "☕", desc: "Nervios, café y fingiendo ser personas completamente normales y equilibradas.", x: 20, y: 55 },
-            { title: "Batalla del Climatizador", visual: "🥶", desc: "Primera noche juntos. Uno muere de frío, el otro de calor. Empiezan las negociaciones diplomáticas.", x: 15, y: 75 },
-            { title: "Conocer a la Suegra", visual: "👵", desc: "Sonrisa congelada, sudor frío y bebiendo vino rápido para sobrevivir al interrogatorio.", x: 35, y: 85 },
-            { title: "Zona de Confianza", visual: "🩳", desc: "Ya hay confianza total. Compartís memes absurdos y vais en pijama feo por casa.", x: 60, y: 80 },
-            { title: "El Pedo Accidental", visual: "💨", desc: "Sucede. Silencio incómodo de 5 segundos. Decidís ignorarlo para siempre.", x: 80, y: 65 },
-            { title: "¡Somos Pareja!", visual: "💖", desc: "Oficialmente juntos. Se ha firmado el contrato invisible. ¡Misión completada!", x: 90, y: 85 }
+            {
+                title: "1. El Radar Periférico",
+                visual: "🧍‍♂️ ..... 🧍‍♀️",
+                desc: "Aún no os conocéis, pero estáis en el mismo lugar físico. Alguien respira el mismo aire que tú en la misma habitación."
+            },
+            {
+                title: "2. Contacto Visual Táctico",
+                visual: "🧍‍♂️ 👀⚡👀 🧍‍♀️",
+                desc: "Nadie dice nada, pero las miradas se cruzan más de tres segundos. Suena una alarma interna."
+            },
+            {
+                title: "3. Rompiendo el Hielo",
+                visual: "🙋‍♂️ 💬 🙋‍♀️",
+                desc: "Una excusa barata, un 'hola' o un mensaje directo. Se inicia la comunicación y descubrís que ambos habláis el mismo idioma."
+            },
+            {
+                title: "4. La Primera Cita",
+                visual: "🧍‍♂️ ☕ 🧍‍♀️",
+                desc: "Nervios, ropa elegida meticulosamente y fingiendo ser personas completamente normales y equilibradas."
+            },
+            {
+                title: "5. Zona de Confianza",
+                visual: "🧑‍🤝‍🧑",
+                desc: "Ya hay confianza. Se descubren los defectos, compartís memes absurdos y vais de la mano por la calle."
+            },
+            {
+                title: "6. ¡Somos Pareja!",
+                visual: "👩‍❤️‍👨 🎉",
+                desc: "Oficialmente juntos. Se ha firmado el contrato invisible. ¡Felicidades, habéis completado el camino!"
+            }
         ];
 
         let currentStage = 0;
-        const token = document.getElementById('player-token');
-        const pathLine = document.getElementById('map-path-line');
 
-        function initApp() {
-            createNodes();
-            drawPath();
-            window.addEventListener('resize', drawPath); // Redibujar si se cambia el tamaño de la ventana
-            updateUI();
-        }
-
-        function createNodes() {
-            const container = document.getElementById('nodes-container');
-            stages.forEach((stage, index) => {
-                const node = document.createElement('div');
-                node.classList.add('map-node');
-                node.id = `node-${index}`;
-                node.style.left = `${stage.x}%`;
-                node.style.top = `${stage.y}%`;
-                container.appendChild(node);
-            });
-        }
-
-        function drawPath() {
-            const mapSection = document.getElementById('map-section');
-            const w = mapSection.clientWidth;
-            const h = mapSection.clientHeight;
-            
-            // Convertir porcentajes a píxeles exactos para dibujar el SVG
-            const points = stages.map(s => `${(s.x / 100) * w},${(s.y / 100) * h}`);
-            pathLine.setAttribute("d", "M " + points.join(" L "));
-        }
+        // Inicializar los puntos del camino
+        const dotsContainer = document.getElementById('path-dots');
+        stages.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            dot.id = `dot-${index}`;
+            dotsContainer.appendChild(dot);
+        });
 
         function updateUI() {
-            const stage = stages[currentStage];
-
-            // 1. Mover Ficha
-            token.style.left = `${stage.x}%`;
-            token.style.top = `${stage.y}%`;
-            token.innerText = stage.visual;
-
-            // Iluminar nodos visitados
-            for(let i=0; i<stages.length; i++) {
-                const node = document.getElementById(`node-${i}`);
-                if(i <= currentStage) node.classList.add('visited');
-                else node.classList.remove('visited');
-            }
-
-            // 2. Actualizar Textos
-            document.getElementById('stage-counter').innerText = `Etapa ${currentStage + 1} de ${stages.length}`;
-            document.getElementById('stage-title').innerText = stage.title;
-            document.getElementById('stage-desc').innerText = stage.desc;
-
-            // 3. Actualizar Botones
-            document.getElementById('btn-prev').disabled = currentStage === 0;
-            const btnNext = document.getElementById('btn-next');
+            // Actualizar contenido
+            const scene = document.getElementById('scene-container');
             
-            if (currentStage === stages.length - 1) {
-                btnNext.innerHTML = '¡Completado! <span>🎉</span>';
-                btnNext.disabled = true;
-            } else {
-                btnNext.innerHTML = 'Avanzar <span>➡️</span>';
-                btnNext.disabled = false;
+            // Forzar reinicio de animación
+            scene.style.animation = 'none';
+            scene.offsetHeight; /* trigger reflow */
+            scene.style.animation = null;
+
+            document.getElementById('stage-title').innerText = stages[currentStage].title;
+            document.getElementById('stage-visual').innerText = stages[currentStage].visual;
+            document.getElementById('stage-desc').innerText = stages[currentStage].desc;
+
+            // Actualizar botones
+            document.getElementById('btn-prev').disabled = currentStage === 0;
+            document.getElementById('btn-next').disabled = currentStage === stages.length - 1;
+
+            // Actualizar barra y puntos
+            document.getElementById('progress-line').style.width = `${(currentStage / (stages.length - 1)) * 100}%`;
+            
+            for (let i = 0; i < stages.length; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i <= currentStage) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
             }
         }
 
         function changeStage(direction) {
-            // Efecto click en la ficha
-            token.style.transform = "translate(-50%, -50%) scale(0.8)";
-            
-            setTimeout(() => {
-                currentStage += direction;
-                if (currentStage < 0) currentStage = 0;
-                if (currentStage >= stages.length) currentStage = stages.length - 1;
-                
-                updateUI();
-                
-                // Restaurar tamaño de la ficha
-                token.style.transform = "translate(-50%, -50%) scale(1)";
-            }, 150);
+            currentStage += direction;
+            if (currentStage < 0) currentStage = 0;
+            if (currentStage >= stages.length) currentStage = stages.length - 1;
+            updateUI();
         }
 
-        // Iniciar
-        window.onload = initApp;
-
+        // Cargar la primera etapa al iniciar
+        updateUI();
     </script>
 </body>
 </html>
